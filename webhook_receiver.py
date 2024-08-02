@@ -58,7 +58,6 @@ def webhook():
             
             if status_many[0]['status'] == 'success':  
                 status_monday = update_monday(status_many[1],id_pulso)
-                print(status_monday.status_code)
                 if status_monday.status_code == 200:
                     over = time.time() 
                     ejecucion_automa(start,over,f'Ejecucion completada:{client["Celular 1"]}')
@@ -85,7 +84,7 @@ def update_client_many(aut_many,cliente):
         if check_whatp['status'] == 'success' and check_phone['status']== 'success':
             if len(check_whatp['data']) == 0:
                 if len(check_phone['data']) == 0:
-                    print('opcion1')
+                
                     #aqui entran los que no estan ni con wp ni con phone
                     create_status = create_many(aut_many,cliente)
                     if create_status['status'] == 'success':
@@ -96,7 +95,6 @@ def update_client_many(aut_many,cliente):
                         return create_status , 0
                 else:
                     #aqui entran los que no tienen wp pero si tienen phone
-                    print('opcion2')
                     id_many = check_phone['data']['id']
                     update_status = actualizar_campo(aut_many,cliente,check_phone['data']['id'])
                     return update_status, id_many
@@ -106,7 +104,6 @@ def update_client_many(aut_many,cliente):
                 
                 if len(check_phone['data']) == 0:
                     #aqui entran los que tienen wp pero no tienen phone
-                    print('opcion3')
                     id_many = check_whatp['data'][0]['id']                
                     create_status = update_phone(headers_many,cliente,id_many)
                     if create_status['status'] == 'success':
@@ -117,23 +114,19 @@ def update_client_many(aut_many,cliente):
     
                 else:
                     #aqui entran los que tienen wp y tienen phone
-                    print("opcion4")
                     id_many = check_phone['data']['id']
                     update_status = actualizar_campo(aut_many,cliente,id_many)
                     return update_status , id_many
 
         else:
-            print('opcion5')
             return {'status': 'error', 'message': 'update error', 'details': 'error chequeando whatsapp o phone'}
             #concateneme los dos estatus para enviarlos como error al archivo de ejecucion de automatizaciones
 
     else:
         #aqui entra si ya tiene el id de manychat y pues revisamos que tenga phone porque es el nos interesa para el mensaje
-        print('opcion6')
         check_phone = check_user_sistem_field(aut_many,cliente)
         if check_phone['status']== 'success':
             if len(check_phone['data']) == 0:
-                print('entro')
                 id_many = cliente['Id many 1']            
                 create_status = update_phone(headers_many,cliente,id_many)
                 if create_status['status'] == 'success':
@@ -256,8 +249,8 @@ def get_column_client(id):
             dic[col['column']['title']] = col['text']
         return dic
     else:
-        print(f"Error: {response.status_code}")
-        print(response.text)
+        return response
+   
 #-------------------------------
 def update_monday(idMany,idMonday):
     vals = {'texto79': idMany }
